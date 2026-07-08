@@ -111,8 +111,8 @@
 </div>
 
 <div class="hero-banner">
-    <h1 id="main-title">Terence Choi Solo Show 2026 Live Group Auction</h1>
-    <p id="main-sub">13-22/7/2026</p>
+    <h1 id="main-title">Art Toy Live Group Auction</h1>
+    <p id="main-sub">Micbraining & Guest Artists Exhibition Showroom</p>
 </div>
 
 <div class="entrance-container" id="stage-entrance">
@@ -284,6 +284,30 @@
         }
     };
 
+    // 終極安全日期解析：若格式錯誤直接回傳 null，絕不產生 NaN 癱瘓後續程式碼
+    function safeParseDate(dateStr) {
+        if (!dateStr) return null;
+        if (typeof dateStr === 'number') return dateStr;
+        if (dateStr.toDate && typeof dateStr.toDate === 'function') return dateStr.toDate().getTime();
+        
+        try {
+            let cleaned = dateStr.toString().trim();
+            let timestamp = Date.parse(cleaned);
+            if (!isNaN(timestamp)) return timestamp;
+
+            let normalized = cleaned.replace(/-/g, '/').replace('T', ' ');
+            if (normalized.indexOf('.') !== -1) {
+                normalized = normalized.substring(0, normalized.indexOf('.'));
+            }
+            normalized = normalized.replace('Z', '');
+            
+            let fallback = new Date(normalized).getTime();
+            return isNaN(fallback) ? null : fallback;
+        } catch (e) {
+            return null;
+        }
+    }
+
     if (localStorage.getItem('mic_bidder_profile')) {
         showShowroom(true);
         updateWelcomeMessage();
@@ -291,7 +315,6 @@
         showShowroom(false);
     }
 
-    // ✨ 核心修復：在點擊分頁按鈕並重新渲染卡片後，強制重新執行 bind 事件綁定
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.onclick = (e) => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -375,8 +398,8 @@
         if (docSnap.exists()) {
             const data = docSnap.data();
             if (data.serverTimeSnapshot) {
-                const parsedCloud = Date.parse(data.serverTimeSnapshot);
-                if (!isNaN(parsedCloud)) {
+                const parsedCloud = safeParseDate(data.serverTimeSnapshot);
+                if (parsedCloud) {
                     const localTime = new Date().getTime();
                     serverClockOffset = parsedCloud - localTime;
                 }
@@ -505,12 +528,13 @@
         const correctedNow = new Date().getTime() + serverClockOffset;
         const t = i18n[currentLang];
 
+        // 1. 頂部分頁狀態更新
         ["Part 1", "Part 2", "Part 3"].forEach((g, idx) => {
             const subEl = document.getElementById(`tab-sub-p${idx+1}`);
             if(!subEl) return;
             
             const startStr = groupStartTimes[g];
-            const startTime = startStr ? Date.parse(startStr) : null;
+            const startTime = safeParseDate(startStr);
             
             if (startTime && correctedNow < startTime) {
                 subEl.innerText = `🔴 ${t.statusUpcoming}`;
@@ -521,61 +545,70 @@
             }
         });
 
+        // 2. 沙盒隔離：逐一計算各品項倒數，其中一個出錯絕對不會卡死其他的卡片
         Object.keys(activeItemDeadlines).forEach(itemId => {
-            const timerElement = document.getElementById(`timer-${itemId}`);
-            const submitBtn = document.querySelector(`.sync-btn-${itemId}`);
-            if (!timerElement) return;
+            try {
+                const timerElement = document.getElementById(`timer-${itemId}`);
+                const submitBtn = document.querySelector(`.sync-btn-${itemId}`);
+                if (!timerElement) return;
 
-            const itemConfig = activeItemDeadlines[itemId];
-            const startStr = groupStartTimes[itemConfig.group];
-            const startTime = startStr ? Date.parse(startStr) : null;
-            const deadlineParsed = Date.parse(itemConfig.deadline);
+                const itemConfig = activeItemDeadlines[itemId];
+                const startStr = groupStartTimes[itemConfig.group];
+                const startTime = safeParseDate(startStr);
+                const deadlineParsed = safeParseDate(itemConfig.deadline);
 
-            if (startTime && correctedNow < startTime) {
-                timerElement.innerText = t.upcoming;
-                timerElement.className = "item-timer-box item-timer-upcoming";
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerText = t.upcoming;
-                }
-                return; 
-            }
-
-            if (isNaN(deadlineParsed)) {
-                timerElement.innerText = "Format Error";
-                timerElement.className = "item-timer-box item-timer-ended";
-                return;
-            }
-
-            const timeLeft = deadlineParsed - correctedNow;
-
-            if (timeLeft <= 0) {
-                timerElement.innerText = t.closed;
-                timerElement.className = "item-timer-box item-timer-ended";
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerText = t.closed;
-                }
-            } else {
-                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                timerElement.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-                if (submitBtn) {
-                    submitBtn.innerText = t.bidBtn; 
+                // 如果活動組別尚未開始，鎖定該組別按鈕
+                if (startTime && correctedNow < startTime) {
+                    timerElement.innerText = t.upcoming;
+                    timerElement.className = "item-timer-box item-timer-upcoming";
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerText = t.upcoming;
+                    }
+                    return; 
                 }
 
-                if (timeLeft <= 120000) { 
-                    timerElement.className = "item-timer-box item-timer-sniping";
-                    timerElement.innerText = `⏱️ ${days}d ${hours}h ${minutes}m ${seconds}s`;
-                } else {
+                // 即使後台 deadline 解析失敗（為 null），也只會降級成常態 Live，按鈕保持暢通
+                if (!deadlineParsed) {
+                    timerElement.innerText = "Live";
                     timerElement.className = "item-timer-box";
+                    if (submitBtn && !submitBtn.getAttribute('data-submitting')) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = t.bidBtn;
+                    }
+                    return;
                 }
-                if (submitBtn && submitBtn.disabled && !submitBtn.getAttribute('data-submitting')) {
-                    submitBtn.disabled = false;
+
+                const timeLeft = deadlineParsed - correctedNow;
+
+                if (timeLeft <= 0) {
+                    timerElement.innerText = t.closed;
+                    timerElement.className = "item-timer-box item-timer-ended";
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerText = t.closed;
+                    }
+                } else {
+                    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                    timerElement.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+                    if (timeLeft <= 120000) { 
+                        timerElement.className = "item-timer-box item-timer-sniping";
+                        timerElement.innerText = `⏱️ ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    } else {
+                        timerElement.className = "item-timer-box";
+                    }
+                    
+                    if (submitBtn && !submitBtn.getAttribute('data-submitting')) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = t.bidBtn;
+                    }
                 }
+            } catch (err) {
+                console.error("Error ticking item:", itemId, err);
             }
         });
     }
@@ -612,14 +645,13 @@
                 
                 const t = i18n[currentLang];
                 
-                // 安全檢查：拍賣群組時間未到
                 const startStr = groupStartTimes[itemConfig.group];
-                if (startStr && correctedNow < Date.parse(startStr)) {
+                const startTimeParsed = safeParseDate(startStr);
+                if (startTimeParsed && correctedNow < startTimeParsed) {
                     alert("This auction part has not started yet!");
                     return;
                 }
 
-                // 讀取本地買家資料
                 const savedProfile = localStorage.getItem('mic_bidder_profile');
                 if (!savedProfile) {
                     alert(t.loseConn);
@@ -629,7 +661,6 @@
                 const buyerObj = JSON.parse(savedProfile);
                 const userBid = parseInt(inputEl.value);
 
-                // 檢查是否包含 1-9 元零頭
                 if (userBid % 10 !== 0) {
                     statusMsg.style.color = '#d93025';
                     statusMsg.innerText = t.errTen;
@@ -658,18 +689,16 @@
                             throw { message: "low_err", required: minRequired };
                         }
 
-                        // 計算壓哨延長機制 (Anti-Sniping)
                         let finalDeadline = cloudItem.deadline || "2026-12-31T00:00:00.000Z";
-                        const cloudDeadlineParsed = Date.parse(finalDeadline);
+                        const cloudDeadlineParsed = safeParseDate(finalDeadline);
                         const serverNow = new Date().getTime() + serverClockOffset;
-                        const cloudTimeLeft = cloudDeadlineParsed - serverNow;
+                        const cloudTimeLeft = cloudDeadlineParsed ? (cloudDeadlineParsed - serverNow) : 0;
 
-                        if (cloudTimeLeft <= 120000 && cloudTimeLeft > 0) {
+                        if (cloudDeadlineParsed && cloudTimeLeft <= 120000 && cloudTimeLeft > 0) {
                             const newDeadlineObj = new Date(serverNow + 120000);
                             finalDeadline = newDeadlineObj.toISOString();
                         }
 
-                        // 建構出價歷史包紀錄
                         const timestampStr = new Date(serverNow).toISOString();
                         const newBidRecord = {
                             bidder_name: buyerObj.name,
@@ -681,7 +710,6 @@
                         const existingBids = cloudItem.bids || [];
                         existingBids.push(newBidRecord);
 
-                        // 更新主商品集合
                         transaction.update(itemDocRef, {
                             currentHighestBid: userBid,
                             lastBidderIg: buyerObj.ig,
@@ -690,7 +718,6 @@
                             bids: existingBids
                         });
                         
-                        // 同步寫入私有敏感聯絡集合 (private_bids) 以供對數
                         const privateBidsRef = collection(db, "private_bids");
                         await addDoc(privateBidsRef, {
                             itemId: itemId,
@@ -706,7 +733,6 @@
                         });
                     });
 
-                    // 成功反饋與灑花特效
                     statusMsg.style.color = '#188038';
                     statusMsg.innerText = t.success;
                     if (typeof confetti === 'function') {
