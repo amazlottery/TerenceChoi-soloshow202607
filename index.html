@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Toy Live Group Auction - Gallery Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+            background: linear-gradient(180deg, #ffffff 0%, #f1f3f4 50%, #e8eaed 100%); 
+            background-attachment: fixed; 
+            color: #202124; 
+            margin: 0; 
+            padding: 0; 
+            overflow-x: hidden; 
+        }
+        .lang-switcher { position: absolute; top: 20px; right: 20px; z-index: 110; }
+        .lang-btn { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(4px); border: 1px solid #dadce0; color: #1a73e8; padding: 8px 16px; border-radius: 20px; font-weight: 500; cursor: pointer; font-size: 13px; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .lang-btn:hover { background: #f1f3f4; border-color: #1a73e8; }
+
+        .dynamic-banner-container { width: 100%; max-width: 100%; display: none; overflow: hidden; background: #1a1a1a; line-height: 0; border-bottom: 1px solid #dadce0; }
+        .dynamic-banner-img { width: 100%; height: auto; max-height: 400px; object-fit: contain; display: block; margin: 0 auto; }
+
+        .hero-banner { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 60px 20px 40px 20px; text-align: center; border-bottom: 1px solid #dadce0; position: relative; }
+        .hero-banner h1 { font-size: 36px; margin: 0 0 12px 0; color: #202124; font-weight: 600; letter-spacing: -0.5px; }
+        .hero-banner p { font-size: 16px; color: #5f6368; margin: 0 0 24px 0; font-weight: 400; }
+        
+        .global-timer-container { display: inline-block; background: #fff; padding: 12px 36px; border-radius: 24px; border: 1px solid #dadce0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.3s; margin-bottom: 10px; }
+        .global-timer-title { font-size: 11px; color: #5f6368; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+        .global-timer { font-size: 24px; font-weight: 700; color: #1a73e8; font-family: inherit; }
+        
+        .timer-sniping { border-color: #d93025 !important; background: #fce8e6 !important; }
+        .timer-sniping .global-timer { color: #d93025 !important; }
+        .timer-ended { border-color: #5f6368 !important; background: #f1f3f4 !important; }
+        .timer-ended .global-timer { color: #5f6368 !important; }
+        
+        .entrance-container { max-width: 550px; margin: 40px auto; padding: 0 20px; }
+        .global-profile-box { background: #ffffff; padding: 35px; border-radius: 12px; border: 1px solid #dadce0; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
+        .profile-title { font-size: 16px; color: #202124; font-weight: 600; margin-bottom: 24px; text-align: center; line-height: 1.5; }
+        .auth-notice-msg { font-size: 13px; text-align: center; color: #1a73e8; margin-top: 12px; min-height: 18px; font-weight: 500; line-height: 1.5; word-break: break-all; }
+
+        .status-strip { max-width: 1140px; margin: 25px auto 5px auto; padding: 0 20px; display: none; }
+        .profile-lock-status { font-size: 13px; color: #3c4043; background: #fff; border: 1px solid #dadce0; padding: 12px 24px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .btn-unlock-profile { background: #f1f3f4; border: 1px solid #dadce0; color: #3c4043; font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.2s; }
+        .btn-unlock-profile:hover { background: #e8eaed; color: #d93025; border-color: #d93025; }
+
+        .main-content { max-width: 1180px; margin: 0 auto 60px auto; padding: 0 20px; display: none; }
+        .auction-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .figure-card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(60,64,67,0.12), 0 1px 2px rgba(60,64,67,0.24); border: 1px solid #dadce0; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; animation: fadeInUp 0.5s ease; }
+        .figure-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(60,64,67,0.15); }
+        .figure-img { width: 100%; height: 320px; object-fit: cover; background: #f1f3f4; border-bottom: 1px solid #f1f3f4; }
+        .card-content { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
+        .brand-tag { color: #5f6368; font-weight: 600; font-size: 12px; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .figure-title { font-size: 22px; margin: 0 0 16px 0; color: #202124; font-weight: 500; }
+        
+        .bid-box { background: #f8f9fa; padding: 16px; border-radius: 8px; border-left: 4px solid #1a73e8; margin-bottom: 20px; }
+        .bid-box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .bid-box-title { font-size: 12px; color: #5f6368; font-weight: 500; }
+        .bid-count-badge { font-size: 12px; color: #1a73e8; background: #e8f0fe; padding: 4px 12px; border-radius: 12px; font-weight: 600; }
+        .bid-count-zero { background: #f1f3f4; color: #70757a; }
+        .price-text font-size: 26px; color: #202124; font-weight: 700; font-family: inherit; margin: 4px 0; }
+        .fee-remark { font-size: 11px; color: #b06000; font-weight: 400; line-height: 1.4; border-top: 1px solid #e8eaed; padding-top: 6px; margin-top: 6px; }
+
+        .quick-tap-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+        .btn-quick-tap { background: #ffffff; border: 1px solid #dadce0; color: #3c4043; font-size: 13px; padding: 8px 4px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+        .btn-quick-tap:hover { background: #f8f9fa; border-color: #1a73e8; color: #1a73e8; }
+
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 12px; color: #5f6368; margin-bottom: 6px; font-weight: 500; }
+        input, textarea { width: 100%; padding: 11px 14px; box-sizing: border-box; background: #ffffff; border: 1px solid #dadce0; color: #202124; border-radius: 6px; font-size: 14px; transition: border-color 0.2s; }
+        input:focus, textarea:focus { border-color: #1a73e8; outline: none; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
+        textarea { height: 60px; resize: none; }
+        
+        .submit-btn { width: 100%; padding: 12px; background: #1a73e8; border: none; color: white; font-weight: 500; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s, box-shadow 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .submit-btn:hover { background: #1557b0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .submit-btn:disabled { background: #f1f3f4 !important; color: #3c4043 !important; opacity: 0.38; cursor: not-allowed; box-shadow: none !important; border: 1px solid #dadce0; }
+
+        .lock-btn { width: 100%; padding: 12px; background: #1a73e8; border: none; color: white; font-weight: 500; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
+        .lock-btn:hover { background: #1557b0; }
+
+        .live-status-msg { font-size: 12px; font-weight: 500; text-align: center; margin-top: 10px; min-height: 18px; word-break: break-all; }
+        
+        footer { background: #ffffff; padding: 60px 20px; border-top: 1px solid #dadce0; margin-top: 80px; }
+        .tc-container { max-width: 800px; margin: 0 auto; font-size: 13px; color: #5f6368; line-height: 1.8; }
+        .tc-section { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .tc-box h4 { margin: 0 0 12px 0; color: #202124; font-size: 14px; font-weight: 600; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translate3d(0, 20px, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="lang-switcher">
+    <button class="lang-btn" id="toggle-lang-btn">ENG / 繁中</button>
+</div>
+
+<div class="dynamic-banner-container" id="top-banner-area">
+    <img src="" alt="Event Banner" class="dynamic-banner-img" id="top-banner-img">
+</div>
+
+<div class="hero-banner">
+    <h1 id="main-title" data-zh="Art Toy Live Group Auction" data-en="Art Toy Live Group Auction">Art Toy Live Group Auction</h1>
+    <p id="main-sub" data-zh="Micbraining & Guest Artists Exhibition Showroom" data-en="Micbraining & Guest Artists Exhibition Showroom">Micbraining & Guest Artists Exhibition Showroom</p>
+    <div class="global-timer-container" id="timer-box">
+        <div class="global-timer-title" id="timer-title" data-zh="⏱️ 全場統一結標倒數" data-en="⏱️ GLOBAL AUCTION COUNTDOWN">⏱️ 全場統一結標倒數</div>
+        <div class="global-timer" id="main-countdown">Connecting server clock...</div>
+    </div>
+</div>
+
+<div class="entrance-container" id="stage-entrance">
+    <div class="global-profile-box">
+        <div class="profile-title" id="p-box-title" data-zh="🔑 請先填寫買家資料以進入拍賣展廳" data-en="🔑 Enter Your Details to Enter Showroom">🔑 請先填寫買家資料以進入拍賣展廳</div>
+        <form id="global-profile-form">
+            <div class="input-group">
+                <label id="lbl-name" data-zh="買家真實姓名 *" data-en="Full Name *">買家真實姓名 *</label>
+                <input type="text" id="g-name" required>
+            </div>
+            <div class="input-group" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <label id="lbl-ig" data-zh="IG 帳號 *" data-en="Instagram Account *">IG 帳號 *</label>
+                    <input type="text" id="g-ig" placeholder="e.g. micbraining" required>
+                </div>
+                <div>
+                    <label id="lbl-mobile" data-zh="電話號碼 *" data-en="Mobile / WhatsApp *">電話號碼 *</label>
+                    <input type="text" id="g-mobile" required>
+                </div>
+            </div>
+            <div class="input-group" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <label id="lbl-email" data-zh="Email 電子信箱 *" data-en="Email Address *">Email 電子信箱 *</label>
+                    <input type="email" id="g-email" required>
+                </div>
+                <div>
+                    <label id="lbl-paypal" data-zh="PayPal 帳號 *" data-en="PayPal Account *">PayPal 帳號 *</label>
+                    <input type="text" id="g-paypal" required>
+                </div>
+            </div>
+            <div class="input-group">
+                <label id="lbl-address" data-zh="完整收件地址 *" data-en="Shipping Address *">完整收件地址 *</label>
+                <textarea id="g-address" required></textarea>
+            </div>
+            <button type="submit" class="lock-btn" id="btn-lock-submit" data-zh="🚪 填妥並進入展廳 (Enter Showroom)" data-en="🚪 Enter Showroom">🚪 填妥並進入展廳 (Enter Showroom)</button>
+            <div class="auth-notice-msg" id="auth-status-msg"></div>
+        </form>
+    </div>
+</div>
+
+<div class="status-strip" id="stage-status-strip">
+    <div class="profile-lock-status">
+        <span id="welcome-msg">🔒 Registered</span>
+        <button type="button" class="btn-unlock-profile" id="global-unlock-btn" data-zh="登出 / 切換帳號" data-en="Logout / Switch">登出 / 切換帳號</button>
+    </div>
+</div>
+
+<div class="main-content" id="stage-showroom">
+    <div class="auction-grid" id="auction-container"></div>
+</div>
+
+<footer>
+    <div class="tc-container">
+        <h3 style="color:#202124; text-align:center; margin-bottom:24px; font-weight: 500;" id="lbl-tc-title" data-zh="Terms & Conditions ｜ 競拍條款與細則" data-en="Terms & Conditions">Terms & Conditions ｜ 競拍條款與細則</h3>
+        <div class="tc-section">
+            <div class="tc-box">
+                <h4 id="lbl-zh-notice" data-zh="中文須知：" data-en="Chinese Notice:">中文須知：</h4>
+                <ol style="padding-left:20px; margin:0;">
+                    <li>出價前請務必確認資料正確，送出後即代表法律契約成立。</li>
+                    <li style="color: #1a73e8; font-weight: 500;">⚠️ 出價規範：出價金額尾數必須為 0（以 10 元港幣為最小填寫單位），系統不接受帶有 1-9 元零頭的出價。</li>
+                    <li style="color: #b06000; font-weight: 500;">⚠️ 得標金額【不包含】PayPal 手續費及運費。買家需額外承擔 5% 的 PayPal 手續費以及實際物流運費。</li>
+                    <li style="color: #d93025; font-weight: 500;">⏱️ 壓哨延長機制：若在拍賣截止前 2 分鐘內有人出價，該場拍賣時間將自動延長 2 分鐘。</li>
+                </ol>
+            </div>
+            <div class="tc-box">
+                <h4 id="lbl-en-notice" data-zh="英文須知：" data-en="English Notice:">English Notice:</h4>
+                <ol style="padding-left:20px; margin:0;">
+                    <li>Please ensure registration details are accurate. Every bid is a legally binding contract.</li>
+                    <li style="color: #1a73e8; font-weight: 500;">⚠️ Bidding Rule: The bid amount must end in 0 (must be in increments of 10). Bids ending in 1-9 are strictly invalid.</li>
+                    <li style="color: #b06000; font-weight: 500;">⚠️ IMPORTANT: Winning bid 【EXCLUDES】 5% PayPal transaction fees and actual shipping charges.</li>
+                    <li style="color: #d93025; font-weight: 500;">⏱️ Anti-Sniping Rule: Any bid placed within the final 2 minutes extends the deadline by 2 minutes.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, doc, runTransaction, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC-3jzZxWNTNcLsj-kLF8mwbau6RgUCtQ0",
+        authDomain: "testing-auction.firebaseapp.com",
+        projectId: "testing-auction",
+        storageBucket: "testing-auction.firebasestorage.app",
+        messagingSenderId: "74987805921",
+        appId: "1:74987805921:web:8900864f763b08469e2ba0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const minIncrement = 100;
+    
+    let globalDeadlineISO = null; 
+    let isAuctionEnded = false;
+    let currentLang = localStorage.getItem('mic_lang') || 'zh'; 
+    let cacheAuctionSnapshot = null;
+
+    // ⏱️ 伺服器時間校正核心變數
+    let serverClockOffset = 0; 
+    let hasSyncedClock = false;
+
+    const i18n = {
+        zh: {
+            liveBid: "目前最高出價 (Current Bid)",
+            feeMsg: "⚠️ 得標價【未含】5% PayPal 手續費與實際物流運費",
+            bidBtn: "🚀 參與競拍出價",
+            inputPlaceholder: "最低出價限制 HKD ",
+            bidLabel: "我要出價 (HKD) *",
+            connecting: "正在連線大會時鐘...",
+            closed: "🔒 拍賣會已圓滿截止 (EVENT CLOSED)",
+            sniping: "⏱️ 壓哨延長機制生效中 (2 MINS LEFT)",
+            sending: "⚡ 正在安全傳送出價至雲端...",
+            success: "🎉 恭喜！您目前為該商品的最高出價者！",
+            errExist: "商品不存在！",
+            errLow: "出價過低！期間已有新出價，最低需投 HKD ",
+            errTen: "金額無效！出價金額尾數必須為 0（例如: 1100, 1550），不能包含 1-9 元零頭！",
+            errFail: "❌ 出價失敗：",
+            loseConn: "聯絡資料丟失，請重新填表登錄！"
+        },
+        en: {
+            liveBid: "Current Highest Bid",
+            feeMsg: "⚠️ Winning bid EXCLUDES 5% PayPal fee & shipping costs",
+            bidBtn: "🚀 Place My Bid",
+            inputPlaceholder: "Min bid requirement HKD ",
+            bidLabel: "My Bid Amount (HKD) *",
+            connecting: "Connecting server clock...",
+            closed: "🔒 AUCTION CLOSED",
+            sniping: "⏱️ ANTI-SNIPING EXTENSION ACTIVE",
+            sending: "⚡ Sending your live bid securely to cloud...",
+            success: "🎉 Success! You are the current highest bidder!",
+            errExist: "Item not found!",
+            errLow: "Bid too low! Another collector just outbid you. Min required HKD ",
+            errTen: "Invalid Amount! Bids must be in tens (e.g., 1100, 1550). Bids ending in 1-9 are not allowed!",
+            errFail: "❌ Bid failed: ",
+            loseConn: "Profile lost. Please fill details and enter again!"
+        }
+    };
+
+    if (localStorage.getItem('mic_bidder_profile')) {
+        showShowroom(true);
+        updateWelcomeMessage();
+    } else {
+        showShowroom(false);
+    }
+
+    document.getElementById('toggle-lang-btn').onclick = () => {
+        currentLang = currentLang === 'zh' ? 'en' : 'zh';
+        localStorage.setItem('mic_lang', currentLang);
+        applyLanguage();
+    };
+
+    function applyLanguage() {
+        document.querySelectorAll('[data-zh]').forEach(el => {
+            el.innerText = el.getAttribute(`data-${currentLang}`);
+        });
+        updateWelcomeMessage();
+        if (cacheAuctionSnapshot) renderAuctionGrid(cacheAuctionSnapshot);
+    }
+
+    function updateWelcomeMessage() {
+        const saved = localStorage.getItem('mic_bidder_profile');
+        if (saved) {
+            const userObj = JSON.parse(saved);
+            document.getElementById('welcome-msg').innerText = currentLang === 'zh' 
+                ? `🔓 已登記買家：${userObj.name} (${userObj.ig}) | 競拍權限正常`
+                : `🔓 Registered Collector: ${userObj.name} (${userObj.ig})`;
+        }
+    }
+
+    document.getElementById('global-profile-form').onsubmit = (e) => {
+        e.preventDefault();
+        const name = document.getElementById('g-name').value.trim();
+        const ig = document.getElementById('g-ig').value.trim();
+        const mobile = document.getElementById('g-mobile').value.trim();
+        const email = document.getElementById('g-email').value.trim();
+        const paypal = document.getElementById('g-paypal').value.trim();
+        const address = document.getElementById('g-address').value.trim();
+
+        const profileData = { name, ig, mobile, email, paypal, address };
+        localStorage.setItem('mic_bidder_profile', JSON.stringify(profileData));
+        
+        showShowroom(true);
+        updateWelcomeMessage();
+    };
+
+    document.getElementById('global-unlock-btn').onclick = () => {
+        localStorage.removeItem('mic_bidder_profile');
+        showShowroom(false);
+        document.getElementById('auth-status-msg').innerText = "";
+        document.getElementById('global-profile-form').reset();
+    };
+
+    function showShowroom(isReady) {
+        if (isReady) {
+            document.getElementById('stage-entrance').style.display = 'none';
+            document.getElementById('stage-status-strip').style.display = 'block';
+            document.getElementById('stage-showroom').style.display = 'block';
+        } else {
+            document.getElementById('stage-entrance').style.display = 'block';
+            document.getElementById('stage-status-strip').style.display = 'none';
+            document.getElementById('stage-showroom').style.display = 'none';
+        }
+    }
+
+    // ⏱️ 核心時鐘同步：當獲取大會設定時，精準算出買家電腦與雲端伺服器的時間差
+    onSnapshot(doc(db, "config", "global_settings"), (docSnap) => {
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.deadline) globalDeadlineISO = data.deadline;
+            
+            // 抓取 Firestore 近期某個寫入的雲端時間（此處以伺服器時間為參考校正）
+            if (data.serverTimeSnapshot) {
+                const cloudTime = new Date(data.serverTimeSnapshot).getTime();
+                const localTime = new Date().getTime();
+                serverClockOffset = cloudTime - localTime;
+                hasSyncedClock = true;
+            }
+
+            const bannerArea = document.getElementById('top-banner-area');
+            const bannerImg = document.getElementById('top-banner-img');
+            if (data.bannerUrl && data.bannerUrl.trim() !== "") {
+                bannerImg.src = data.bannerUrl.trim();
+                bannerArea.style.display = 'block';
+            } else {
+                bannerArea.style.display = 'none';
+            }
+        }
+    });
+
+    onSnapshot(collection(db, "event_auctions"), (snapshot) => {
+        cacheAuctionSnapshot = snapshot;
+        renderAuctionGrid(snapshot);
+    });
+
+    // 🔄 修正動態語系刷新 Bug ＆ 注入限制
+    function renderAuctionGrid(snapshot) {
+        const container = document.getElementById('auction-container');
+        const currentInputs = {};
+        document.querySelectorAll('.b-amount').forEach(el => {
+            const id = el.getAttribute('data-id');
+            if(el.value) currentInputs[id] = el.value;
+        });
+
+        container.innerHTML = '';
+        if (snapshot.empty) {
+            container.innerHTML = `<div style="text-align:center; width:100%; color:#5f6368; padding:40px;">No items cataloged.</div>`;
+            return;
+        }
+
+        const t = i18n[currentLang];
+        const sortedDocs = [];
+        snapshot.forEach(docSnap => sortedDocs.push(docSnap));
+        sortedDocs.sort((a, b) => {
+            const seqA = a.data().sequence !== undefined ? parseInt(a.data().sequence) : 999;
+            const seqB = b.data().sequence !== undefined ? parseInt(b.data().sequence) : 999;
+            return seqA - seqB; 
+        });
+
+        sortedDocs.forEach((docSnap) => {
+            const item = docSnap.data();
+            const itemId = docSnap.id;
+            const card = document.createElement('div');
+            card.className = `figure-card id-card-${itemId}`;
+            const bidCount = item.bids ? item.bids.length : 0;
+            const badgeText = bidCount > 0 ? `${bidCount} Bids` : `0 Bids`;
+
+            const quick1 = item.currentHighestBid + minIncrement;
+            const quick2 = item.currentHighestBid + 200;
+            const quick3 = item.currentHighestBid + 500;
+
+            card.innerHTML = `
+                <img src="${item.imageUrl || 'https://via.placeholder.com/320'}" alt="${item.title}" class="figure-img">
+                <div class="card-content">
+                    <div class="brand-tag">${item.brand || 'UNKNOWN'}</div>
+                    <h3 class="figure-title">${item.title || 'Untitled'}</h3>
+                    <div class="bid-box">
+                        <div class="bid-box-header">
+                            <span class="bid-box-title">${t.liveBid}</span>
+                            <span class="bid-count-badge ${bidCount===0?'bid-count-zero':''}">${badgeText}</span>
+                        </div>
+                        <div class="price-text">HKD ${(item.currentHighestBid || 0).toLocaleString()}</div>
+                        <div class="fee-remark">${t.feeMsg}</div>
+                    </div>
+                    <form class="quick-bid-form" data-id="${itemId}">
+                        <div class="quick-tap-container">
+                            <button type="button" class="btn-quick-tap" data-target="${itemId}" data-val="${quick1}">+${minIncrement}</button>
+                            <button type="button" class="btn-quick-tap" data-target="${itemId}" data-val="${quick2}">+200</button>
+                            <button type="button" class="btn-quick-tap" data-target="${itemId}" data-val="${quick3}">+500</button>
+                        </div>
+                        <div class="input-group">
+                            <label style="color: #1a73e8; font-weight:500;">${t.bidLabel}</label>
+                            <input type="number" step="10" min="${quick1}" class="b-amount b-amt-${itemId}" data-id="${itemId}" required placeholder="${t.inputPlaceholder}${quick1}">
+                        </div>
+                        <button type="submit" class="submit-btn" ${isAuctionEnded ? 'disabled' : ''}>${t.bidBtn}</button>
+                        <div class="live-status-msg msg-id-${itemId}"></div>
+                    </form>
+                </div>
+            `;
+            container.appendChild(card);
+            if(currentInputs[itemId]) container.querySelector(`.b-amt-${itemId}`).value = currentInputs[itemId];
+        });
+
+        bindFormEvents();
+        bindQuickTapEvents();
+    }
+
+    // ⏱️ 同步校正校準倒數計時器
+    setInterval(() => {
+        if (!globalDeadlineISO) return;
+        const timerElement = document.getElementById('main-countdown');
+        const timerBox = document.getElementById('timer-box');
+        const timerTitle = document.getElementById('timer-title');
+        
+        // 使用校正後的精準雲端時間進行timeLeft運算
+        const correctedNow = new Date().getTime() + serverClockOffset;
+        const timeLeft = new Date(globalDeadlineISO).getTime() - correctedNow;
+        const t = i18n[currentLang];
+        
+        if (timeLeft <= 0) {
+            timerElement.innerText = t.closed;
+            timerBox.className = "global-timer-container timer-ended";
+            timerTitle.innerText = "🔒 CLOSED";
+            if (!isAuctionEnded) { 
+                isAuctionEnded = true; 
+                document.querySelectorAll('.submit-btn').forEach(btn => btn.disabled = true);
+            }
+        } else {
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            timerElement.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            if (timeLeft <= 120000) {
+                timerBox.className = "global-timer-container timer-sniping";
+                timerTitle.innerText = t.sniping;
+            } else {
+                timerBox.className = "global-timer-container";
+                timerTitle.innerText = currentLang === 'zh' ? '⏱️ 全場統一結標倒數' : '⏱️ GLOBAL AUCTION COUNTDOWN';
+            }
+        }
+    }, 1000);
+
+    function bindQuickTapEvents() {
+        document.querySelectorAll('.btn-quick-tap').forEach(btn => {
+            btn.onclick = (e) => {
+                const targetId = e.target.getAttribute('data-target');
+                const val = e.target.getAttribute('data-val');
+                const inputEl = document.querySelector(`.b-amt-${targetId}`);
+                if (inputEl) inputEl.value = val;
+            };
+        });
+    }
+
+    function bindFormEvents() {
+        document.querySelectorAll('.quick-bid-form').forEach(form => {
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                if (isAuctionEnded) return;
+
+                const itemId = form.getAttribute('data-id');
+                const submitBtn = form.querySelector('.submit-btn');
+                const statusMsg = form.querySelector(`.msg-id-${itemId}`);
+                const bidAmount = parseInt(form.querySelector(`.b-amt-${itemId}`).value);
+                const t = i18n[currentLang];
+
+                if (bidAmount % 10 !== 0) {
+                    statusMsg.style.color = '#d93025';
+                    statusMsg.innerText = t.errTen;
+                    return; 
+                }
+
+                const savedUser = JSON.parse(localStorage.getItem('mic_bidder_profile'));
+                if(!savedUser) {
+                    alert(t.loseConn);
+                    showShowroom(false);
+                    return;
+                }
+                
+                // 解構出公開資料與敏感個資
+                const { name, ig, mobile, email, paypal, address } = savedUser;
+
+                submitBtn.disabled = true;
+                statusMsg.style.color = '#b06000';
+                statusMsg.innerText = t.sending;
+
+                const docRef = doc(db, "event_auctions", itemId);
+
+                try {
+                    await runTransaction(db, async (transaction) => {
+                        const sfDoc = await transaction.get(docRef);
+                        if (!sfDoc.exists()) throw t.errExist;
+
+                        const currentHighest = sfDoc.get('currentHighestBid') || 0;
+                        if (bidAmount < currentHighest + minIncrement) {
+                            throw `${t.errLow}${currentHighest + minIncrement}`;
+                        }
+
+                        const currentBids = sfDoc.get('bids') || [];
+                        const timestampISO = new Date().toISOString();
+                        
+                        // 🔒 隱私分離安全策略：公開區僅寫入名字與IG，防止路人爬蟲抓走個資
+                        currentBids.push({
+                            name, ig,
+                            amount: bidAmount,
+                            timestamp: timestampISO
+                        });
+
+                        transaction.update(docRef, {
+                            currentHighestBid: bidAmount,
+                            bids: currentBids
+                        });
+
+                        // ⏱️ 安全時鐘延長判定（結合伺服器時間校正）
+                        if (globalDeadlineISO) {
+                            const currentDeadlineTime = new Date(globalDeadlineISO).getTime();
+                            const correctedNow = new Date().getTime() + serverClockOffset;
+                            
+                            if (currentDeadlineTime - correctedNow <= 120000 && currentDeadlineTime - correctedNow > 0) {
+                                const newDeadlineISO = new Date(currentDeadlineTime + 120000).toISOString();
+                                transaction.update(doc(db, "config", "global_settings"), { 
+                                    deadline: newDeadlineISO,
+                                    serverTimeSnapshot: timestampISO // 同步更新伺服器基準時間戳
+                                });
+                            } else {
+                                transaction.update(doc(db, "config", "global_settings"), { 
+                                    serverTimeSnapshot: timestampISO 
+                                });
+                            }
+                        }
+                    });
+
+                    // 🔒 隱私分離安全策略：敏感個資單獨拋送到獨立的隱密獨立集合 (網頁端其他人讀不到)
+                    await addDoc(collection(db, "private_bids"), {
+                        itemId,
+                        name, ig, mobile, email, paypal, address,
+                        amount: bidAmount,
+                        timestamp: new Date().toISOString()
+                    });
+
+                    statusMsg.style.color = '#188038';
+                    statusMsg.innerText = t.success;
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    form.querySelector(`.b-amt-${itemId}`).value = '';
+
+                } catch (error) {
+                    statusMsg.style.color = '#d93025';
+                    statusMsg.innerText = `${t.errFail}${error}`;
+                } finally {
+                    submitBtn.disabled = false;
+                }
+            };
+        });
+    }
+
+    applyLanguage();
+</script>
+
+</body>
+</html>
