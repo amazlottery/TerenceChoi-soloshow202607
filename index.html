@@ -198,7 +198,7 @@
                 </ol>
             </div>
             <div class="tc-box">
-                <h4 id="lbl-en-notice" data-zh="英文須知：" data-en="English Notice:">English Notice:</h4>
+                <h4 id="lbl-en-notice" data-zh="英文須知：" data-en="English Notice:">英文須知：</h4>
                 <ol style="padding-left:20px; margin:0;">
                     <li>Please ensure registration details are accurate. Every bid is a legally binding contract.</li>
                     <li style="color: #1a73e8; font-weight: 500;">⚠️ Bidding Rule: The bid amount must end in 0 (must be in increments of 10). Bids ending in 1-9 are strictly invalid.</li>
@@ -284,7 +284,6 @@
         }
     };
 
-    // 終極安全日期解析：若格式錯誤直接回傳 null，絕不產生 NaN 癱瘓後續程式碼
     function safeParseDate(dateStr) {
         if (!dateStr) return null;
         if (typeof dateStr === 'number') return dateStr;
@@ -528,24 +527,42 @@
         const correctedNow = new Date().getTime() + serverClockOffset;
         const t = i18n[currentLang];
 
-        // 1. 頂部分頁狀態更新
+        // 1. 根據大會時時段，設定嚴格的 Part 開放與結束區間 (若後台沒填則依固定日期)
+        const parsedPeriods = {
+            "Part 1": {
+                start: safeParseDate(groupStartTimes["Part 1"]) || safeParseDate("2026-07-08T00:00:00.000Z"),
+                end: safeParseDate(groupStartTimes["Part 2"]) || safeParseDate("2026-07-11T00:00:00.000Z")
+            },
+            "Part 2": {
+                start: safeParseDate(groupStartTimes["Part 2"]) || safeParseDate("2026-07-11T00:00:00.000Z"),
+                end: safeParseDate(groupStartTimes["Part 3"]) || safeParseDate("2026-07-14T00:00:00.000Z")
+            },
+            "Part 3": {
+                start: safeParseDate(groupStartTimes["Part 3"]) || safeParseDate("2026-07-14T00:00:00.000Z"),
+                end: safeParseDate("2026-07-17T00:00:00.000Z")
+            }
+        };
+
+        // 2. 處理分頁導覽標籤的亮燈邏輯 (確保不會同時全部顯示「進行中」)
         ["Part 1", "Part 2", "Part 3"].forEach((g, idx) => {
             const subEl = document.getElementById(`tab-sub-p${idx+1}`);
             if(!subEl) return;
             
-            const startStr = groupStartTimes[g];
-            const startTime = safeParseDate(startStr);
+            const period = parsedPeriods[g];
             
-            if (startTime && correctedNow < startTime) {
+            if (correctedNow < period.start) {
                 subEl.innerText = `🔴 ${t.statusUpcoming}`;
                 subEl.style.color = '#d46b08';
-            } else {
+            } else if (correctedNow >= period.start && correctedNow < period.end) {
                 subEl.innerText = `🟢 ${t.statusLive}`;
                 subEl.style.color = '#188038';
+            } else {
+                subEl.innerText = `⚫ ${t.statusEnded}`;
+                subEl.style.color = '#5f6368';
             }
         });
 
-        // 2. 沙盒隔離：逐一計算各品項倒數，其中一個出錯絕對不會卡死其他的卡片
+        // 3. 沙盒防禦：逐一計算目前分頁內的商品卡片狀態
         Object.keys(activeItemDeadlines).forEach(itemId => {
             try {
                 const timerElement = document.getElementById(`timer-${itemId}`);
@@ -553,12 +570,11 @@
                 if (!timerElement) return;
 
                 const itemConfig = activeItemDeadlines[itemId];
-                const startStr = groupStartTimes[itemConfig.group];
-                const startTime = safeParseDate(startStr);
+                const period = parsedPeriods[itemConfig.group]; 
                 const deadlineParsed = safeParseDate(itemConfig.deadline);
 
-                // 如果活動組別尚未開始，鎖定該組別按鈕
-                if (startTime && correctedNow < startTime) {
+                // 強制攔截 A：若目前時間尚未達到該群組的開放展期
+                if (correctedNow < period.start) {
                     timerElement.innerText = t.upcoming;
                     timerElement.className = "item-timer-box item-timer-upcoming";
                     if (submitBtn) {
@@ -568,7 +584,18 @@
                     return; 
                 }
 
-                // 即使後台 deadline 解析失敗（為 null），也只會降級成常態 Live，按鈕保持暢通
+                // 強制攔截 B：若目前時間已超過該群組的結束展期
+                if (correctedNow >= period.end) {
+                    timerElement.innerText = t.closed;
+                    timerElement.className = "item-timer-box item-timer-ended";
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerText = t.closed;
+                    }
+                    return;
+                }
+
+                // 若在時段內，但商品個別 deadline 毀損
                 if (!deadlineParsed) {
                     timerElement.innerText = "Live";
                     timerElement.className = "item-timer-box";
@@ -645,10 +672,16 @@
                 
                 const t = i18n[currentLang];
                 
-                const startStr = groupStartTimes[itemConfig.group];
-                const startTimeParsed = safeParseDate(startStr);
-                if (startTimeParsed && correctedNow < startTimeParsed) {
-                    alert("This auction part has not started yet!");
+                // 開放時段判定防禦
+                const parsedPeriods = {
+                    "Part 1": { start: safeParseDate(groupStartTimes["Part 1"]) || safeParseDate("2026-07-08T00:00:00.000Z"), end: safeParseDate(groupStartTimes["Part 2"]) || safeParseDate("2026-07-11T00:00:00.000Z") },
+                    "Part 2": { start: safeParseDate(groupStartTimes["Part 2"]) || safeParseDate("2026-07-11T00:00:00.000Z"), end: safeParseDate(groupStartTimes["Part 3"]) || safeParseDate("2026-07-14T00:00:00.000Z") },
+                    "Part 3": { start: safeParseDate(groupStartTimes["Part 3"]) || safeParseDate("2026-07-14T00:00:00.000Z"), end: safeParseDate("2026-07-17T00:00:00.000Z") }
+                };
+
+                const period = parsedPeriods[itemConfig.group];
+                if (correctedNow < period.start || correctedNow >= period.end) {
+                    alert("This auction session is currently unavailable for active bidding.");
                     return;
                 }
 
