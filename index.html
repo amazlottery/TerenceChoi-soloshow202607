@@ -59,7 +59,7 @@
         .bid-box-title { font-size: 12px; color: #5f6368; font-weight: 500; }
         .bid-count-badge { font-size: 12px; color: #1a73e8; background: #e8f0fe; padding: 4px 12px; border-radius: 12px; font-weight: 600; }
         .bid-count-zero { background: #f1f3f4; color: #70757a; }
-        .price-text font-size: 26px; color: #202124; font-weight: 700; font-family: inherit; margin: 4px 0; }
+        .price-text { font-size: 26px; color: #202124; font-weight: 700; font-family: inherit; margin: 4px 0; }
         .fee-remark { font-size: 11px; color: #b06000; font-weight: 400; line-height: 1.4; border-top: 1px solid #e8eaed; padding-top: 6px; margin-top: 6px; }
 
         .quick-tap-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
@@ -192,13 +192,14 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, runTransaction, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    // 🔗 這裡已成功更換為你的全新專案資料庫 (terence-choi-soloshow202607)
     const firebaseConfig = {
-        apiKey: "AIzaSyC-3jzZxWNTNcLsj-kLF8mwbau6RgUCtQ0",
-        authDomain: "testing-auction.firebaseapp.com",
-        projectId: "testing-auction",
-        storageBucket: "testing-auction.firebasestorage.app",
-        messagingSenderId: "74987805921",
-        appId: "1:74987805921:web:8900864f763b08469e2ba0"
+        apiKey: "AIzaSyB7Ug3oFU5UilQZWAhfByqWnjX3uXY7ky8",
+        authDomain: "terence-choi-soloshow202607.firebaseapp.com",
+        projectId: "terence-choi-soloshow202607",
+        storageBucket: "terence-choi-soloshow202607.firebasestorage.app",
+        messagingSenderId: "432902730714",
+        appId: "1:432902730714:web:52aa489369ad0419ebc6e3"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -210,7 +211,6 @@
     let currentLang = localStorage.getItem('mic_lang') || 'zh'; 
     let cacheAuctionSnapshot = null;
 
-    // ⏱️ 伺服器時間校正核心變數
     let serverClockOffset = 0; 
     let hasSyncedClock = false;
 
@@ -317,13 +317,11 @@
         }
     }
 
-    // ⏱️ 核心時鐘同步：當獲取大會設定時，精準算出買家電腦與雲端伺服器的時間差
     onSnapshot(doc(db, "config", "global_settings"), (docSnap) => {
         if (docSnap.exists()) {
             const data = docSnap.data();
             if (data.deadline) globalDeadlineISO = data.deadline;
             
-            // 抓取 Firestore 近期某個寫入的雲端時間（此處以伺服器時間為參考校正）
             if (data.serverTimeSnapshot) {
                 const cloudTime = new Date(data.serverTimeSnapshot).getTime();
                 const localTime = new Date().getTime();
@@ -347,7 +345,6 @@
         renderAuctionGrid(snapshot);
     });
 
-    // 🔄 修正動態語系刷新 Bug ＆ 注入限制
     function renderAuctionGrid(snapshot) {
         const container = document.getElementById('auction-container');
         const currentInputs = {};
@@ -384,10 +381,10 @@
             const quick3 = item.currentHighestBid + 500;
 
             card.innerHTML = `
-                <img src="${item.imageUrl || 'https://via.placeholder.com/320'}" alt="${item.title}" class="figure-img">
+                <img src="${item.imageUrl || 'https://via.placeholder.com/320'}" alt="${item.figureName || item.title || 'Untitled'}" class="figure-img">
                 <div class="card-content">
                     <div class="brand-tag">${item.brand || 'UNKNOWN'}</div>
-                    <h3 class="figure-title">${item.title || 'Untitled'}</h3>
+                    <h3 class="figure-title">${item.figureName || item.title || 'Untitled'}</h3>
                     <div class="bid-box">
                         <div class="bid-box-header">
                             <span class="bid-box-title">${t.liveBid}</span>
@@ -419,14 +416,12 @@
         bindQuickTapEvents();
     }
 
-    // ⏱️ 同步校正校準倒數計時器
     setInterval(() => {
         if (!globalDeadlineISO) return;
         const timerElement = document.getElementById('main-countdown');
         const timerBox = document.getElementById('timer-box');
         const timerTitle = document.getElementById('timer-title');
         
-        // 使用校正後的精準雲端時間進行timeLeft運算
         const correctedNow = new Date().getTime() + serverClockOffset;
         const timeLeft = new Date(globalDeadlineISO).getTime() - correctedNow;
         const t = i18n[currentLang];
@@ -492,7 +487,6 @@
                     return;
                 }
                 
-                // 解構出公開資料與敏感個資
                 const { name, ig, mobile, email, paypal, address } = savedUser;
 
                 submitBtn.disabled = true;
@@ -514,7 +508,6 @@
                         const currentBids = sfDoc.get('bids') || [];
                         const timestampISO = new Date().toISOString();
                         
-                        // 🔒 隱私分離安全策略：公開區僅寫入名字與IG，防止路人爬蟲抓走個資
                         currentBids.push({
                             name, ig,
                             amount: bidAmount,
@@ -526,7 +519,6 @@
                             bids: currentBids
                         });
 
-                        // ⏱️ 安全時鐘延長判定（結合伺服器時間校正）
                         if (globalDeadlineISO) {
                             const currentDeadlineTime = new Date(globalDeadlineISO).getTime();
                             const correctedNow = new Date().getTime() + serverClockOffset;
@@ -535,17 +527,12 @@
                                 const newDeadlineISO = new Date(currentDeadlineTime + 120000).toISOString();
                                 transaction.update(doc(db, "config", "global_settings"), { 
                                     deadline: newDeadlineISO,
-                                    serverTimeSnapshot: timestampISO // 同步更新伺服器基準時間戳
-                                });
-                            } else {
-                                transaction.update(doc(db, "config", "global_settings"), { 
-                                    serverTimeSnapshot: timestampISO 
+                                    serverTimeSnapshot: timestampISO
                                 });
                             }
                         }
                     });
 
-                    // 🔒 隱私分離安全策略：敏感個資單獨拋送到獨立的隱密獨立集合 (網頁端其他人讀不到)
                     await addDoc(collection(db, "private_bids"), {
                         itemId,
                         name, ig, mobile, email, paypal, address,
