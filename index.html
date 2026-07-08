@@ -36,32 +36,39 @@
         .btn-unlock-profile { background: #f1f3f4; border: 1px solid #dadce0; color: #3c4043; font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.2s; }
         .btn-unlock-profile:hover { background: #e8eaed; color: #d93025; border-color: #d93025; }
 
-        .main-content { max-width: 1180px; margin: 30px auto 60px auto; padding: 0 20px; display: none; }
+        /* 🗂️ Tabs 分頁導覽列樣式 */
+        .tabs-container { max-width: 1140px; margin: 25px auto 0 auto; padding: 0 20px; display: none; }
+        .tabs-nav { display: flex; gap: 10px; border-bottom: 2px solid #dadce0; padding-bottom: 0; }
+        .tab-btn { background: none; border: none; padding: 12px 24px; font-size: 16px; font-weight: 600; color: #5f6368; cursor: pointer; position: relative; transition: color 0.2s; }
+        .tab-btn:hover { color: #1a73e8; }
+        .tab-btn.active { color: #1a73e8; }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background: #1a73e8; border-radius: 3px 3px 0 0; }
+        .tab-status-sub { display: block; font-size: 11px; font-weight: 400; margin-top: 4px; color: #70757a; }
+
+        .main-content { max-width: 1180px; margin: 20px auto 60px auto; padding: 0 20px; display: none; }
         .auction-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
         
-        /* 商品卡片優化 */
-        .figure-card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(60,64,67,0.12), 0 1px 2px rgba(60,64,67,0.24); border: 1px solid #dadce0; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; animation: fadeInUp 0.5s ease; position: relative; }
+        .figure-card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(60,64,67,0.12), 0 1px 2px rgba(60,64,67,0.24); border: 1px solid #dadce0; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; animation: fadeInUp 0.4s ease; position: relative; }
         .figure-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(60,64,67,0.15); }
         .figure-img { width: 100%; height: 320px; object-fit: cover; background: #f1f3f4; border-bottom: 1px solid #f1f3f4; }
         .card-content { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
         
-        /* 群組標籤與獨立時鐘樣式 */
         .card-meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .brand-tag { color: #5f6368; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
         .group-badge { background: #e8f0fe; color: #1a73e8; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; }
         .figure-title { font-size: 22px; margin: 0 0 16px 0; color: #202124; font-weight: 500; }
         
-        /* 獨立倒數時計 */
         .item-timer-box { background: #f1f3f4; border: 1px solid #dadce0; padding: 8px 12px; border-radius: 6px; text-align: center; margin-bottom: 16px; font-size: 14px; font-weight: 700; color: #1a73e8; }
         .item-timer-sniping { background: #fce8e6 !important; border-color: #d93025 !important; color: #d93025 !important; }
         .item-timer-ended { background: #f1f3f4 !important; border-color: #9aa0a6 !important; color: #5f6368 !important; }
+        .item-timer-upcoming { background: #fff7e6 !important; border-color: #ffc069 !important; color: #d46b08 !important; }
 
         .bid-box { background: #f8f9fa; padding: 16px; border-radius: 8px; border-left: 4px solid #1a73e8; margin-bottom: 20px; }
         .bid-box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .bid-box-title { font-size: 12px; color: #5f6368; font-weight: 500; }
         .bid-count-badge { font-size: 12px; color: #1a73e8; background: #e8f0fe; padding: 4px 12px; border-radius: 12px; font-weight: 600; }
         .bid-count-zero { background: #f1f3f4; color: #70757a; }
-        .price-text { font-size: 26px; color: #202124; font-weight: 700; font-family: inherit; margin: 4px 0; }
+        .price-text { font-size: 26px; color: #202124; font-weight: 700; margin: 4px 0; }
         .fee-remark { font-size: 11px; color: #b06000; font-weight: 400; line-height: 1.4; border-top: 1px solid #e8eaed; padding-top: 6px; margin-top: 6px; }
 
         .quick-tap-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
@@ -70,17 +77,16 @@
 
         .input-group { margin-bottom: 16px; }
         .input-group label { display: block; font-size: 12px; color: #5f6368; margin-bottom: 6px; font-weight: 500; }
-        input, textarea { width: 100%; padding: 11px 14px; box-sizing: border-box; background: #ffffff; border: 1px solid #dadce0; color: #202124; border-radius: 6px; font-size: 14px; transition: border-color 0.2s; }
+        input, textarea { width: 100%; padding: 11px 14px; box-sizing: border-box; background: #ffffff; border: 1px solid #dadce0; color: #202124; border-radius: 6px; font-size: 14px; }
         input:focus, textarea:focus { border-color: #1a73e8; outline: none; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
         textarea { height: 60px; resize: none; }
         
-        .submit-btn { width: 100%; padding: 12px; background: #1a73e8; border: none; color: white; font-weight: 500; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s, box-shadow 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .submit-btn:hover { background: #1557b0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .submit-btn:disabled { background: #f1f3f4 !important; color: #70757a !important; opacity: 0.5; cursor: not-allowed; box-shadow: none !important; border: 1px solid #dadce0; }
+        .submit-btn { width: 100%; padding: 12px; background: #1a73e8; border: none; color: white; font-weight: 500; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .submit-btn:hover { background: #1557b0; }
+        .submit-btn:disabled { background: #f1f3f4 !important; color: #70757a !important; opacity: 0.6; cursor: not-allowed; box-shadow: none !important; border: 1px solid #dadce0; }
 
-        .lock-btn { width: 100%; padding: 12px; background: #1a73e8; border: none; color: white; font-weight: 500; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
-        .lock-btn:hover { background: #1557b0; }
-
+        .lock-btn { width: 100%; padding: 12px; background: #1a73e8; border: none; color: white; font-weight: 500; border-radius: 6px; cursor: pointer; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
+        
         .live-status-msg { font-size: 12px; font-weight: 500; text-align: center; margin-top: 10px; min-height: 18px; word-break: break-all; }
         
         footer { background: #ffffff; padding: 60px 20px; border-top: 1px solid #dadce0; margin-top: 80px; }
@@ -89,7 +95,7 @@
         .tc-box h4 { margin: 0 0 12px 0; color: #202124; font-size: 14px; font-weight: 600; }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translate3d(0, 20px, 0); }
+            from { opacity: 0; transform: translate3d(0, 15px, 0); }
             to { opacity: 1; transform: translate3d(0, 0, 0); }
         }
     </style>
@@ -105,8 +111,8 @@
 </div>
 
 <div class="hero-banner">
-    <h1 id="main-title" data-zh="Art Toy Live Group Auction" data-en="Art Toy Live Group Auction">Art Toy Live Group Auction</h1>
-    <p id="main-sub" data-zh="Micbraining & Guest Artists Exhibition Showroom" data-en="Micbraining & Guest Artists Exhibition Showroom">Micbraining & Guest Artists Exhibition Showroom</p>
+    <h1 id="main-title">Art Toy Live Group Auction</h1>
+    <p id="main-sub">Micbraining & Guest Artists Exhibition Showroom</p>
 </div>
 
 <div class="entrance-container" id="stage-entrance">
@@ -151,6 +157,15 @@
     <div class="profile-lock-status">
         <span id="welcome-msg">🔒 Registered</span>
         <button type="button" class="btn-unlock-profile" id="global-unlock-btn" data-zh="登出 / 切換帳號" data-en="Logout / Switch">登出 / 切換帳號</button>
+    </div>
+</div>
+
+<!-- 🗂️ 頂部 Tabs 切換區 -->
+<div class="tabs-container" id="stage-tabs-nav">
+    <div class="tabs-nav">
+        <button class="tab-btn active" data-group="Part 1">Part 1<span class="tab-status-sub" id="tab-sub-p1">--</span></button>
+        <button class="tab-btn" data-group="Part 2">Part 2<span class="tab-status-sub" id="tab-sub-p2">--</span></button>
+        <button class="tab-btn" data-group="Part 3">Part 3<span class="tab-status-sub" id="tab-sub-p3">--</span></button>
     </div>
 </div>
 
@@ -206,7 +221,15 @@
     let currentLang = localStorage.getItem('mic_lang') || 'zh'; 
     let cacheAuctionSnapshot = null;
     let serverClockOffset = 0; 
-    let activeItemDeadlines = {}; // 紀錄每件商品的即時 Deadline
+    let activeItemDeadlines = {}; 
+    let currentActiveTab = "Part 1"; // 預設看 Part 1
+
+    // 大組開起狀態控制
+    let groupStartTimes = {
+        "Part 1": null,
+        "Part 2": null,
+        "Part 3": null
+    };
 
     const i18n = {
         zh: {
@@ -216,6 +239,7 @@
             inputPlaceholder: "最低出價限制 HKD ",
             bidLabel: "我要出價 (HKD) *",
             closed: "🔒 已截止 (CLOSED)",
+            upcoming: "🔒 未開始 (Upcoming)",
             sniping: "⏱️ 壓哨延長中",
             sending: "⚡ 正在安全傳送出價至雲端...",
             success: "🎉 恭喜！您目前為該商品的最高出價者！",
@@ -223,7 +247,10 @@
             errLow: "出價過低！期間已有新出價，最低需投 HKD ",
             errTen: "金額無效！出價金額尾數必須為 0（例如: 1100, 1550），不能包含 1-9 元零頭！",
             errFail: "❌ 出價失敗：",
-            loseConn: "聯絡資料丟失，請重新填表登錄！"
+            loseConn: "聯絡資料丟失，請重新填表登錄！",
+            statusLive: "進行中",
+            statusEnded: "已結束",
+            statusUpcoming: "未開始"
         },
         en: {
             liveBid: "Current Highest Bid",
@@ -232,6 +259,7 @@
             inputPlaceholder: "Min bid requirement HKD ",
             bidLabel: "My Bid Amount (HKD) *",
             closed: "🔒 CLOSED",
+            upcoming: "🔒 Upcoming",
             sniping: "⏱️ EXTENSION ACTIVE",
             sending: "⚡ Sending your live bid securely to cloud...",
             success: "🎉 Success! You are the current highest bidder!",
@@ -239,7 +267,10 @@
             errLow: "Bid too low! Another collector just outbid you. Min required HKD ",
             errTen: "Invalid Amount! Bids must be in tens (e.g., 1100, 1550). Bids ending in 1-9 are not allowed!",
             errFail: "❌ Bid failed: ",
-            loseConn: "Profile lost. Please fill details and enter again!"
+            loseConn: "Profile lost. Please fill details and enter again!",
+            statusLive: "Live",
+            statusEnded: "Ended",
+            statusUpcoming: "Upcoming"
         }
     };
 
@@ -249,6 +280,17 @@
     } else {
         showShowroom(false);
     }
+
+    // 綁定 Tab 切換點擊事件
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.onclick = (e) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const targetBtn = e.currentTarget;
+            targetBtn.classList.add('active');
+            currentActiveTab = targetBtn.getAttribute('data-group');
+            if (cacheAuctionSnapshot) renderAuctionGrid(cacheAuctionSnapshot);
+        };
+    });
 
     document.getElementById('toggle-lang-btn').onclick = () => {
         currentLang = currentLang === 'zh' ? 'en' : 'zh';
@@ -301,26 +343,33 @@
         if (isReady) {
             document.getElementById('stage-entrance').style.display = 'none';
             document.getElementById('stage-status-strip').style.display = 'block';
+            document.getElementById('stage-tabs-nav').style.display = 'block';
             document.getElementById('stage-showroom').style.display = 'block';
         } else {
             document.getElementById('stage-entrance').style.display = 'block';
             document.getElementById('stage-status-strip').style.display = 'none';
+            document.getElementById('stage-tabs-nav').style.display = 'none';
             document.getElementById('stage-showroom').style.display = 'none';
         }
     }
 
-    // 讀取大會時鐘偏置與橫幅
+    // 讀取伺服器配置與分組開啟時間
     onSnapshot(doc(db, "config", "global_settings"), (docSnap) => {
         if (docSnap.exists()) {
             const data = docSnap.data();
             if (data.serverTimeSnapshot) {
-                // 安全解析以防 NaN 再次發生
                 const parsedCloud = Date.parse(data.serverTimeSnapshot);
                 if (!isNaN(parsedCloud)) {
                     const localTime = new Date().getTime();
                     serverClockOffset = parsedCloud - localTime;
                 }
             }
+            
+            // 載入各組開始時間
+            groupStartTimes["Part 1"] = data.part1_start || null;
+            groupStartTimes["Part 2"] = data.part2_start || null;
+            groupStartTimes["Part 3"] = data.part3_start || null;
+
             const bannerArea = document.getElementById('top-banner-area');
             const bannerImg = document.getElementById('top-banner-img');
             if (data.bannerUrl && data.bannerUrl.trim() !== "") {
@@ -329,10 +378,11 @@
             } else {
                 bannerArea.style.display = 'none';
             }
+            triggerTick();
         }
     });
 
-    // 監聽所有拍賣商品
+    // 監聽商品
     onSnapshot(collection(db, "event_auctions"), (snapshot) => {
         cacheAuctionSnapshot = snapshot;
         renderAuctionGrid(snapshot);
@@ -361,14 +411,28 @@
             return seqA - seqB; 
         });
 
-        activeItemDeadlines = {}; // 重置計時器對應表
+        activeItemDeadlines = {}; 
 
-        sortedDocs.forEach((docSnap) => {
+        // 濾出符合當前選擇 Tab 群組的商品
+        const filteredDocs = sortedDocs.filter(docSnap => {
+            const item = docSnap.data();
+            const itemGroup = item.group || "Part 1";
+            return itemGroup === currentActiveTab;
+        });
+
+        if(filteredDocs.length === 0) {
+            container.innerHTML = `<div style="text-align:center; width:100%; color:#5f6368; padding:60px;">📦 This Part group has no items inside yet.</div>`;
+            return;
+        }
+
+        filteredDocs.forEach((docSnap) => {
             const item = docSnap.data();
             const itemId = docSnap.id;
             
-            // 存入群組獨立時間，若無則預設一個很久以後的時間避免 NaN
-            activeItemDeadlines[itemId] = item.deadline || "2026-12-31T00:00:00.000Z";
+            activeItemDeadlines[itemId] = {
+                deadline: item.deadline || "2026-12-31T00:00:00.000Z",
+                group: item.group || "Part 1"
+            };
 
             const card = document.createElement('div');
             card.className = `figure-card id-card-${itemId}`;
@@ -389,7 +453,7 @@
                     </div>
                     <h3 class="figure-title">${item.figureName || item.title || 'Untitled'}</h3>
                     
-                    <!-- 📦 群組獨立時鐘容器 -->
+                    <!-- 時鐘容器 -->
                     <div class="item-timer-box label-timer-${itemId}" id="timer-${itemId}">--d --h --m --s</div>
 
                     <div class="bid-box">
@@ -421,23 +485,52 @@
 
         bindFormEvents();
         bindQuickTapEvents();
-        triggerTick(); // 渲染後立刻跑一次時鐘更新防止閃爍
+        triggerTick(); 
     }
 
-    // 核心：分組獨立時鐘即時輪詢引擎
+    // 支援「未開始鎖定」+「過期鎖定」雙向即時輪詢計時器
     function triggerTick() {
         const correctedNow = new Date().getTime() + serverClockOffset;
         const t = i18n[currentLang];
 
+        // 1. 更新頂端 Tabs 的副標題狀態顯示 (Live / Ended / Upcoming)
+        ["Part 1", "Part 2", "Part 3"].forEach((g, idx) => {
+            const subEl = document.getElementById(`tab-sub-p${idx+1}`);
+            if(!subEl) return;
+            
+            const startStr = groupStartTimes[g];
+            const startTime = startStr ? Date.parse(startStr) : null;
+            
+            if (startTime && correctedNow < startTime) {
+                subEl.innerText = `🔴 ${t.statusUpcoming}`;
+            } else {
+                subEl.innerText = `🟢 ${t.statusLive}`;
+            }
+        });
+
+        // 2. 輪詢更新畫面上所有卡片的按鈕與倒數
         Object.keys(activeItemDeadlines).forEach(itemId => {
             const timerElement = document.getElementById(`timer-${itemId}`);
             const submitBtn = document.querySelector(`.sync-btn-${itemId}`);
             if (!timerElement) return;
 
-            const deadlineStr = activeItemDeadlines[itemId];
-            const deadlineParsed = Date.parse(deadlineStr);
+            const itemConfig = activeItemDeadlines[itemId];
+            const startStr = groupStartTimes[itemConfig.group];
+            const startTime = startStr ? Date.parse(startStr) : null;
+            const deadlineParsed = Date.parse(itemConfig.deadline);
 
-            // 如果欄位填寫不對，防呆降級顯示不報錯
+            // 檢查：若該群組上架時間還沒到 ➡️ 嚴格鎖定
+            if (startTime && correctedNow < startTime) {
+                timerElement.innerText = t.upcoming;
+                timerElement.className = "item-timer-box item-timer-upcoming";
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerText = t.upcoming;
+                }
+                return; 
+            }
+
+            // 檢查：若已過期
             if (isNaN(deadlineParsed)) {
                 timerElement.innerText = "Format Error";
                 timerElement.className = "item-timer-box item-timer-ended";
@@ -449,8 +542,9 @@
             if (timeLeft <= 0) {
                 timerElement.innerText = t.closed;
                 timerElement.className = "item-timer-box item-timer-ended";
-                if (submitBtn && !submitBtn.disabled) {
+                if (submitBtn) {
                     submitBtn.disabled = true;
+                    submitBtn.innerText = t.closed;
                 }
             } else {
                 const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
@@ -459,7 +553,11 @@
                 const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
                 timerElement.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-                if (timeLeft <= 120000) { // 進入2分鐘壓哨
+                if (submitBtn) {
+                    submitBtn.innerText = t.bidBtn; 
+                }
+
+                if (timeLeft <= 120000) { 
                     timerElement.className = "item-timer-box item-timer-sniping";
                     timerElement.innerText = `⏱️ ${days}d ${hours}h ${minutes}m ${seconds}s`;
                 } else {
@@ -479,6 +577,11 @@
             btn.onclick = (e) => {
                 const targetId = e.target.getAttribute('data-target');
                 const val = e.target.getAttribute('data-val');
+                
+                // 防呆：如果按鈕已被鎖定，不填入數值
+                const submitBtn = document.querySelector(`.sync-btn-${targetId}`);
+                if(submitBtn && submitBtn.disabled) return;
+
                 const inputEl = document.querySelector(`.b-amt-${targetId}`);
                 if (inputEl) inputEl.value = val;
             };
@@ -493,9 +596,18 @@
                 const itemId = form.getAttribute('data-id');
                 const submitBtn = form.querySelector('.submit-btn');
                 
-                // 行為前置檢查：看該商品是否已截止
                 const correctedNow = new Date().getTime() + serverClockOffset;
-                const currentDeadlineTime = Date.parse(activeItemDeadlines[itemId]);
+                const itemConfig = activeItemDeadlines[itemId];
+                
+                // 嚴格安全驗證 A：時間未到，禁止出價
+                const startStr = groupStartTimes[itemConfig.group];
+                if (startStr && correctedNow < Date.parse(startStr)) {
+                    alert("This auction part has not started yet!");
+                    return;
+                }
+
+                // 嚴格安全驗證 B：拍賣已截止，防偷跑
+                const currentDeadlineTime = Date.parse(itemConfig.deadline);
                 if (!isNaN(currentDeadlineTime) && (currentDeadlineTime - correctedNow <= 0)) {
                     return; 
                 }
@@ -550,14 +662,12 @@
                             bids: currentBids
                         };
 
-                        // 獨立商品的壓哨延長機制 (只延長該商品)
                         const itemDeadlineStr = sfDoc.get('deadline');
                         if (itemDeadlineStr) {
                             const itemDeadlineTime = Date.parse(itemDeadlineStr);
                             if (!isNaN(itemDeadlineTime)) {
                                 const freshNow = new Date().getTime() + serverClockOffset;
                                 if (itemDeadlineTime - freshNow <= 120000 && itemDeadlineTime - freshNow > 0) {
-                                    // 自動將這件商品的截止時間延長 2 分鐘
                                     const newDeadlineISO = new Date(itemDeadlineTime + 120000).toISOString();
                                     updatePayload.deadline = newDeadlineISO;
                                 }
@@ -567,7 +677,6 @@
                         transaction.update(docRef, updatePayload);
                     });
 
-                    // 同步寫入私密數據庫
                     await addDoc(collection(db, "private_bids"), {
                         itemId,
                         name, ig, mobile, email, paypal, address,
