@@ -36,14 +36,15 @@
         .btn-unlock-profile { background: #f1f3f4; border: 1px solid #dadce0; color: #3c4043; font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.2s; }
         .btn-unlock-profile:hover { background: #e8eaed; color: #d93025; border-color: #d93025; }
 
-        /* 🗂️ Tabs 分頁導覽列樣式 */
+        /* 🗂️ Tabs 分頁導覽列與日期樣式 */
         .tabs-container { max-width: 1140px; margin: 25px auto 0 auto; padding: 0 20px; display: none; }
-        .tabs-nav { display: flex; gap: 10px; border-bottom: 2px solid #dadce0; padding-bottom: 0; }
-        .tab-btn { background: none; border: none; padding: 12px 24px; font-size: 16px; font-weight: 600; color: #5f6368; cursor: pointer; position: relative; transition: color 0.2s; }
+        .tabs-nav { display: flex; gap: 12px; border-bottom: 2px solid #dadce0; padding-bottom: 0; }
+        .tab-btn { background: none; border: none; padding: 12px 20px; font-size: 16px; font-weight: 600; color: #5f6368; cursor: pointer; position: relative; transition: color 0.2s; text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 120px; }
         .tab-btn:hover { color: #1a73e8; }
         .tab-btn.active { color: #1a73e8; }
         .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background: #1a73e8; border-radius: 3px 3px 0 0; }
-        .tab-status-sub { display: block; font-size: 11px; font-weight: 400; margin-top: 4px; color: #70757a; }
+        .tab-period-sub { display: block; font-size: 11px; font-weight: 400; color: #70757a; margin-top: 2px; }
+        .tab-status-sub { display: block; font-size: 11px; font-weight: 600; margin-top: 4px; }
 
         .main-content { max-width: 1180px; margin: 20px auto 60px auto; padding: 0 20px; display: none; }
         .auction-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
@@ -160,12 +161,23 @@
     </div>
 </div>
 
-<!-- 🗂️ 頂部 Tabs 切換區 -->
 <div class="tabs-container" id="stage-tabs-nav">
     <div class="tabs-nav">
-        <button class="tab-btn active" data-group="Part 1">Part 1<span class="tab-status-sub" id="tab-sub-p1">--</span></button>
-        <button class="tab-btn" data-group="Part 2">Part 2<span class="tab-status-sub" id="tab-sub-p2">--</span></button>
-        <button class="tab-btn" data-group="Part 3">Part 3<span class="tab-status-sub" id="tab-sub-p3">--</span></button>
+        <button class="tab-btn active" data-group="Part 1">
+            Part 1
+            <span class="tab-period-sub">(7/8 - 7/10)</span>
+            <span class="tab-status-sub" id="tab-sub-p1">--</span>
+        </button>
+        <button class="tab-btn" data-group="Part 2">
+            Part 2
+            <span class="tab-period-sub">(7/11 - 7/13)</span>
+            <span class="tab-status-sub" id="tab-sub-p2">--</span>
+        </button>
+        <button class="tab-btn" data-group="Part 3">
+            Part 3
+            <span class="tab-period-sub">(7/14 - 7/16)</span>
+            <span class="tab-status-sub" id="tab-sub-p3">--</span>
+        </button>
     </div>
 </div>
 
@@ -222,9 +234,8 @@
     let cacheAuctionSnapshot = null;
     let serverClockOffset = 0; 
     let activeItemDeadlines = {}; 
-    let currentActiveTab = "Part 1"; // 預設看 Part 1
+    let currentActiveTab = "Part 1"; 
 
-    // 大組開起狀態控制
     let groupStartTimes = {
         "Part 1": null,
         "Part 2": null,
@@ -281,7 +292,6 @@
         showShowroom(false);
     }
 
-    // 綁定 Tab 切換點擊事件
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.onclick = (e) => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -353,7 +363,6 @@
         }
     }
 
-    // 讀取伺服器配置與分組開啟時間
     onSnapshot(doc(db, "config", "global_settings"), (docSnap) => {
         if (docSnap.exists()) {
             const data = docSnap.data();
@@ -365,7 +374,6 @@
                 }
             }
             
-            // 載入各組開始時間
             groupStartTimes["Part 1"] = data.part1_start || null;
             groupStartTimes["Part 2"] = data.part2_start || null;
             groupStartTimes["Part 3"] = data.part3_start || null;
@@ -382,7 +390,6 @@
         }
     });
 
-    // 監聽商品
     onSnapshot(collection(db, "event_auctions"), (snapshot) => {
         cacheAuctionSnapshot = snapshot;
         renderAuctionGrid(snapshot);
@@ -413,7 +420,6 @@
 
         activeItemDeadlines = {}; 
 
-        // 濾出符合當前選擇 Tab 群組的商品
         const filteredDocs = sortedDocs.filter(docSnap => {
             const item = docSnap.data();
             const itemGroup = item.group || "Part 1";
@@ -453,7 +459,6 @@
                     </div>
                     <h3 class="figure-title">${item.figureName || item.title || 'Untitled'}</h3>
                     
-                    <!-- 時鐘容器 -->
                     <div class="item-timer-box label-timer-${itemId}" id="timer-${itemId}">--d --h --m --s</div>
 
                     <div class="bid-box">
@@ -488,12 +493,10 @@
         triggerTick(); 
     }
 
-    // 支援「未開始鎖定」+「過期鎖定」雙向即時輪詢計時器
     function triggerTick() {
         const correctedNow = new Date().getTime() + serverClockOffset;
         const t = i18n[currentLang];
 
-        // 1. 更新頂端 Tabs 的副標題狀態顯示 (Live / Ended / Upcoming)
         ["Part 1", "Part 2", "Part 3"].forEach((g, idx) => {
             const subEl = document.getElementById(`tab-sub-p${idx+1}`);
             if(!subEl) return;
@@ -503,12 +506,13 @@
             
             if (startTime && correctedNow < startTime) {
                 subEl.innerText = `🔴 ${t.statusUpcoming}`;
+                subEl.style.color = '#d46b08';
             } else {
                 subEl.innerText = `🟢 ${t.statusLive}`;
+                subEl.style.color = '#188038';
             }
         });
 
-        // 2. 輪詢更新畫面上所有卡片的按鈕與倒數
         Object.keys(activeItemDeadlines).forEach(itemId => {
             const timerElement = document.getElementById(`timer-${itemId}`);
             const submitBtn = document.querySelector(`.sync-btn-${itemId}`);
@@ -519,7 +523,6 @@
             const startTime = startStr ? Date.parse(startStr) : null;
             const deadlineParsed = Date.parse(itemConfig.deadline);
 
-            // 檢查：若該群組上架時間還沒到 ➡️ 嚴格鎖定
             if (startTime && correctedNow < startTime) {
                 timerElement.innerText = t.upcoming;
                 timerElement.className = "item-timer-box item-timer-upcoming";
@@ -530,7 +533,6 @@
                 return; 
             }
 
-            // 檢查：若已過期
             if (isNaN(deadlineParsed)) {
                 timerElement.innerText = "Format Error";
                 timerElement.className = "item-timer-box item-timer-ended";
@@ -578,7 +580,6 @@
                 const targetId = e.target.getAttribute('data-target');
                 const val = e.target.getAttribute('data-val');
                 
-                // 防呆：如果按鈕已被鎖定，不填入數值
                 const submitBtn = document.querySelector(`.sync-btn-${targetId}`);
                 if(submitBtn && submitBtn.disabled) return;
 
@@ -599,14 +600,12 @@
                 const correctedNow = new Date().getTime() + serverClockOffset;
                 const itemConfig = activeItemDeadlines[itemId];
                 
-                // 嚴格安全驗證 A：時間未到，禁止出價
                 const startStr = groupStartTimes[itemConfig.group];
                 if (startStr && correctedNow < Date.parse(startStr)) {
                     alert("This auction part has not started yet!");
                     return;
                 }
 
-                // 嚴格安全驗證 B：拍賣已截止，防偷跑
                 const currentDeadlineTime = Date.parse(itemConfig.deadline);
                 if (!isNaN(currentDeadlineTime) && (currentDeadlineTime - correctedNow <= 0)) {
                     return; 
