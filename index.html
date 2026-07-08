@@ -22,18 +22,9 @@
         .dynamic-banner-container { width: 100%; max-width: 100%; display: none; overflow: hidden; background: #1a1a1a; line-height: 0; border-bottom: 1px solid #dadce0; }
         .dynamic-banner-img { width: 100%; height: auto; max-height: 400px; object-fit: contain; display: block; margin: 0 auto; }
 
-        .hero-banner { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 60px 20px 40px 20px; text-align: center; border-bottom: 1px solid #dadce0; position: relative; }
+        .hero-banner { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); padding: 50px 20px 30px 20px; text-align: center; border-bottom: 1px solid #dadce0; position: relative; }
         .hero-banner h1 { font-size: 36px; margin: 0 0 12px 0; color: #202124; font-weight: 600; letter-spacing: -0.5px; }
-        .hero-banner p { font-size: 16px; color: #5f6368; margin: 0 0 24px 0; font-weight: 400; }
-        
-        .global-timer-container { display: inline-block; background: #fff; padding: 12px 36px; border-radius: 24px; border: 1px solid #dadce0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.3s; margin-bottom: 10px; }
-        .global-timer-title { font-size: 11px; color: #5f6368; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
-        .global-timer { font-size: 24px; font-weight: 700; color: #1a73e8; font-family: inherit; }
-        
-        .timer-sniping { border-color: #d93025 !important; background: #fce8e6 !important; }
-        .timer-sniping .global-timer { color: #d93025 !important; }
-        .timer-ended { border-color: #5f6368 !important; background: #f1f3f4 !important; }
-        .timer-ended .global-timer { color: #5f6368 !important; }
+        .hero-banner p { font-size: 16px; color: #5f6368; margin: 0; font-weight: 400; }
         
         .entrance-container { max-width: 550px; margin: 40px auto; padding: 0 20px; }
         .global-profile-box { background: #ffffff; padding: 35px; border-radius: 12px; border: 1px solid #dadce0; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
@@ -45,15 +36,26 @@
         .btn-unlock-profile { background: #f1f3f4; border: 1px solid #dadce0; color: #3c4043; font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.2s; }
         .btn-unlock-profile:hover { background: #e8eaed; color: #d93025; border-color: #d93025; }
 
-        .main-content { max-width: 1180px; margin: 0 auto 60px auto; padding: 0 20px; display: none; }
+        .main-content { max-width: 1180px; margin: 30px auto 60px auto; padding: 0 20px; display: none; }
         .auction-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        .figure-card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(60,64,67,0.12), 0 1px 2px rgba(60,64,67,0.24); border: 1px solid #dadce0; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; animation: fadeInUp 0.5s ease; }
+        
+        /* 商品卡片優化 */
+        .figure-card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(60,64,67,0.12), 0 1px 2px rgba(60,64,67,0.24); border: 1px solid #dadce0; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; animation: fadeInUp 0.5s ease; position: relative; }
         .figure-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(60,64,67,0.15); }
         .figure-img { width: 100%; height: 320px; object-fit: cover; background: #f1f3f4; border-bottom: 1px solid #f1f3f4; }
         .card-content { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
-        .brand-tag { color: #5f6368; font-weight: 600; font-size: 12px; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
+        
+        /* 群組標籤與獨立時鐘樣式 */
+        .card-meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .brand-tag { color: #5f6368; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .group-badge { background: #e8f0fe; color: #1a73e8; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; }
         .figure-title { font-size: 22px; margin: 0 0 16px 0; color: #202124; font-weight: 500; }
         
+        /* 獨立倒數時計 */
+        .item-timer-box { background: #f1f3f4; border: 1px solid #dadce0; padding: 8px 12px; border-radius: 6px; text-align: center; margin-bottom: 16px; font-size: 14px; font-weight: 700; color: #1a73e8; }
+        .item-timer-sniping { background: #fce8e6 !important; border-color: #d93025 !important; color: #d93025 !important; }
+        .item-timer-ended { background: #f1f3f4 !important; border-color: #9aa0a6 !important; color: #5f6368 !important; }
+
         .bid-box { background: #f8f9fa; padding: 16px; border-radius: 8px; border-left: 4px solid #1a73e8; margin-bottom: 20px; }
         .bid-box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .bid-box-title { font-size: 12px; color: #5f6368; font-weight: 500; }
@@ -74,7 +76,7 @@
         
         .submit-btn { width: 100%; padding: 12px; background: #1a73e8; border: none; color: white; font-weight: 500; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s, box-shadow 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .submit-btn:hover { background: #1557b0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .submit-btn:disabled { background: #f1f3f4 !important; color: #3c4043 !important; opacity: 0.38; cursor: not-allowed; box-shadow: none !important; border: 1px solid #dadce0; }
+        .submit-btn:disabled { background: #f1f3f4 !important; color: #70757a !important; opacity: 0.5; cursor: not-allowed; box-shadow: none !important; border: 1px solid #dadce0; }
 
         .lock-btn { width: 100%; padding: 12px; background: #1a73e8; border: none; color: white; font-weight: 500; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
         .lock-btn:hover { background: #1557b0; }
@@ -105,10 +107,6 @@
 <div class="hero-banner">
     <h1 id="main-title" data-zh="Art Toy Live Group Auction" data-en="Art Toy Live Group Auction">Art Toy Live Group Auction</h1>
     <p id="main-sub" data-zh="Micbraining & Guest Artists Exhibition Showroom" data-en="Micbraining & Guest Artists Exhibition Showroom">Micbraining & Guest Artists Exhibition Showroom</p>
-    <div class="global-timer-container" id="timer-box">
-        <div class="global-timer-title" id="timer-title" data-zh="⏱️ 全場統一結標倒數" data-en="⏱️ GLOBAL AUCTION COUNTDOWN">⏱️ 全場統一結標倒數</div>
-        <div class="global-timer" id="main-countdown">Connecting server clock...</div>
-    </div>
 </div>
 
 <div class="entrance-container" id="stage-entrance">
@@ -170,7 +168,7 @@
                     <li>出價前請務必確認資料正確，送出後即代表法律契約成立。</li>
                     <li style="color: #1a73e8; font-weight: 500;">⚠️ 出價規範：出價金額尾數必須為 0（以 10 元港幣為最小填寫單位），系統不接受帶有 1-9 元零頭的出價。</li>
                     <li style="color: #b06000; font-weight: 500;">⚠️ 得標金額【不包含】PayPal 手續費及運費。買家需額外承擔 5% 的 PayPal 手續費以及實際物流運費。</li>
-                    <li style="color: #d93025; font-weight: 500;">⏱️ 壓哨延長機制：若在拍賣截止前 2 分鐘內有人出價，該場拍賣時間將自動延長 2 分鐘。</li>
+                    <li style="color: #d93025; font-weight: 500;">⏱️ 壓哨延長機制：若在拍賣截止前 2 分鐘內有人出價，該場商品拍賣時間將自動延長 2 分鐘。</li>
                 </ol>
             </div>
             <div class="tc-box">
@@ -179,7 +177,7 @@
                     <li>Please ensure registration details are accurate. Every bid is a legally binding contract.</li>
                     <li style="color: #1a73e8; font-weight: 500;">⚠️ Bidding Rule: The bid amount must end in 0 (must be in increments of 10). Bids ending in 1-9 are strictly invalid.</li>
                     <li style="color: #b06000; font-weight: 500;">⚠️ IMPORTANT: Winning bid 【EXCLUDES】 5% PayPal transaction fees and actual shipping charges.</li>
-                    <li style="color: #d93025; font-weight: 500;">⏱️ Anti-Sniping Rule: Any bid placed within the final 2 minutes extends the deadline by 2 minutes.</li>
+                    <li style="color: #d93025; font-weight: 500;">⏱️ Anti-Sniping Rule: Any bid placed within the final 2 minutes extends that item's deadline by 2 minutes.</li>
                 </ol>
             </div>
         </div>
@@ -192,7 +190,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, runTransaction, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // 🔗 這裡已成功更換為你的全新專案資料庫 (terence-choi-soloshow202607)
     const firebaseConfig = {
         apiKey: "AIzaSyB7Ug3oFU5UilQZWAhfByqWnjX3uXY7ky8",
         authDomain: "terence-choi-soloshow202607.firebaseapp.com",
@@ -206,13 +203,10 @@
     const db = getFirestore(app);
     const minIncrement = 100;
     
-    let globalDeadlineISO = null; 
-    let isAuctionEnded = false;
     let currentLang = localStorage.getItem('mic_lang') || 'zh'; 
     let cacheAuctionSnapshot = null;
-
     let serverClockOffset = 0; 
-    let hasSyncedClock = false;
+    let activeItemDeadlines = {}; // 紀錄每件商品的即時 Deadline
 
     const i18n = {
         zh: {
@@ -221,9 +215,8 @@
             bidBtn: "🚀 參與競拍出價",
             inputPlaceholder: "最低出價限制 HKD ",
             bidLabel: "我要出價 (HKD) *",
-            connecting: "正在連線大會時鐘...",
-            closed: "🔒 拍賣會已圓滿截止 (EVENT CLOSED)",
-            sniping: "⏱️ 壓哨延長機制生效中 (2 MINS LEFT)",
+            closed: "🔒 已截止 (CLOSED)",
+            sniping: "⏱️ 壓哨延長中",
             sending: "⚡ 正在安全傳送出價至雲端...",
             success: "🎉 恭喜！您目前為該商品的最高出價者！",
             errExist: "商品不存在！",
@@ -238,9 +231,8 @@
             bidBtn: "🚀 Place My Bid",
             inputPlaceholder: "Min bid requirement HKD ",
             bidLabel: "My Bid Amount (HKD) *",
-            connecting: "Connecting server clock...",
-            closed: "🔒 AUCTION CLOSED",
-            sniping: "⏱️ ANTI-SNIPING EXTENSION ACTIVE",
+            closed: "🔒 CLOSED",
+            sniping: "⏱️ EXTENSION ACTIVE",
             sending: "⚡ Sending your live bid securely to cloud...",
             success: "🎉 Success! You are the current highest bidder!",
             errExist: "Item not found!",
@@ -317,18 +309,18 @@
         }
     }
 
+    // 讀取大會時鐘偏置與橫幅
     onSnapshot(doc(db, "config", "global_settings"), (docSnap) => {
         if (docSnap.exists()) {
             const data = docSnap.data();
-            if (data.deadline) globalDeadlineISO = data.deadline;
-            
             if (data.serverTimeSnapshot) {
-                const cloudTime = new Date(data.serverTimeSnapshot).getTime();
-                const localTime = new Date().getTime();
-                serverClockOffset = cloudTime - localTime;
-                hasSyncedClock = true;
+                // 安全解析以防 NaN 再次發生
+                const parsedCloud = Date.parse(data.serverTimeSnapshot);
+                if (!isNaN(parsedCloud)) {
+                    const localTime = new Date().getTime();
+                    serverClockOffset = parsedCloud - localTime;
+                }
             }
-
             const bannerArea = document.getElementById('top-banner-area');
             const bannerImg = document.getElementById('top-banner-img');
             if (data.bannerUrl && data.bannerUrl.trim() !== "") {
@@ -340,6 +332,7 @@
         }
     });
 
+    // 監聽所有拍賣商品
     onSnapshot(collection(db, "event_auctions"), (snapshot) => {
         cacheAuctionSnapshot = snapshot;
         renderAuctionGrid(snapshot);
@@ -368,9 +361,15 @@
             return seqA - seqB; 
         });
 
+        activeItemDeadlines = {}; // 重置計時器對應表
+
         sortedDocs.forEach((docSnap) => {
             const item = docSnap.data();
             const itemId = docSnap.id;
+            
+            // 存入群組獨立時間，若無則預設一個很久以後的時間避免 NaN
+            activeItemDeadlines[itemId] = item.deadline || "2026-12-31T00:00:00.000Z";
+
             const card = document.createElement('div');
             card.className = `figure-card id-card-${itemId}`;
             const bidCount = item.bids ? item.bids.length : 0;
@@ -379,12 +378,20 @@
             const quick1 = item.currentHighestBid + minIncrement;
             const quick2 = item.currentHighestBid + 200;
             const quick3 = item.currentHighestBid + 500;
+            const groupName = item.group || "Part 1";
 
             card.innerHTML = `
                 <img src="${item.imageUrl || 'https://via.placeholder.com/320'}" alt="${item.figureName || item.title || 'Untitled'}" class="figure-img">
                 <div class="card-content">
-                    <div class="brand-tag">${item.brand || 'UNKNOWN'}</div>
+                    <div class="card-meta-row">
+                        <div class="brand-tag">${item.brand || 'UNKNOWN'}</div>
+                        <div class="group-badge">${groupName}</div>
+                    </div>
                     <h3 class="figure-title">${item.figureName || item.title || 'Untitled'}</h3>
+                    
+                    <!-- 📦 群組獨立時鐘容器 -->
+                    <div class="item-timer-box label-timer-${itemId}" id="timer-${itemId}">--d --h --m --s</div>
+
                     <div class="bid-box">
                         <div class="bid-box-header">
                             <span class="bid-box-title">${t.liveBid}</span>
@@ -393,7 +400,7 @@
                         <div class="price-text">HKD ${(item.currentHighestBid || 0).toLocaleString()}</div>
                         <div class="fee-remark">${t.feeMsg}</div>
                     </div>
-                    <form class="quick-bid-form" data-id="${itemId}">
+                    <form class="quick-bid-form" data-id="${itemId}" id="form-${itemId}">
                         <div class="quick-tap-container">
                             <button type="button" class="btn-quick-tap" data-target="${itemId}" data-val="${quick1}">+${minIncrement}</button>
                             <button type="button" class="btn-quick-tap" data-target="${itemId}" data-val="${quick2}">+200</button>
@@ -403,7 +410,7 @@
                             <label style="color: #1a73e8; font-weight:500;">${t.bidLabel}</label>
                             <input type="number" step="10" min="${quick1}" class="b-amount b-amt-${itemId}" data-id="${itemId}" required placeholder="${t.inputPlaceholder}${quick1}">
                         </div>
-                        <button type="submit" class="submit-btn" ${isAuctionEnded ? 'disabled' : ''}>${t.bidBtn}</button>
+                        <button type="submit" class="submit-btn sync-btn-${itemId}">${t.bidBtn}</button>
                         <div class="live-status-msg msg-id-${itemId}"></div>
                     </form>
                 </div>
@@ -414,42 +421,58 @@
 
         bindFormEvents();
         bindQuickTapEvents();
+        triggerTick(); // 渲染後立刻跑一次時鐘更新防止閃爍
     }
 
-    setInterval(() => {
-        if (!globalDeadlineISO) return;
-        const timerElement = document.getElementById('main-countdown');
-        const timerBox = document.getElementById('timer-box');
-        const timerTitle = document.getElementById('timer-title');
-        
+    // 核心：分組獨立時鐘即時輪詢引擎
+    function triggerTick() {
         const correctedNow = new Date().getTime() + serverClockOffset;
-        const timeLeft = new Date(globalDeadlineISO).getTime() - correctedNow;
         const t = i18n[currentLang];
-        
-        if (timeLeft <= 0) {
-            timerElement.innerText = t.closed;
-            timerBox.className = "global-timer-container timer-ended";
-            timerTitle.innerText = "🔒 CLOSED";
-            if (!isAuctionEnded) { 
-                isAuctionEnded = true; 
-                document.querySelectorAll('.submit-btn').forEach(btn => btn.disabled = true);
-            }
-        } else {
-            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-            timerElement.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-            if (timeLeft <= 120000) {
-                timerBox.className = "global-timer-container timer-sniping";
-                timerTitle.innerText = t.sniping;
-            } else {
-                timerBox.className = "global-timer-container";
-                timerTitle.innerText = currentLang === 'zh' ? '⏱️ 全場統一結標倒數' : '⏱️ GLOBAL AUCTION COUNTDOWN';
+        Object.keys(activeItemDeadlines).forEach(itemId => {
+            const timerElement = document.getElementById(`timer-${itemId}`);
+            const submitBtn = document.querySelector(`.sync-btn-${itemId}`);
+            if (!timerElement) return;
+
+            const deadlineStr = activeItemDeadlines[itemId];
+            const deadlineParsed = Date.parse(deadlineStr);
+
+            // 如果欄位填寫不對，防呆降級顯示不報錯
+            if (isNaN(deadlineParsed)) {
+                timerElement.innerText = "Format Error";
+                timerElement.className = "item-timer-box item-timer-ended";
+                return;
             }
-        }
-    }, 1000);
+
+            const timeLeft = deadlineParsed - correctedNow;
+
+            if (timeLeft <= 0) {
+                timerElement.innerText = t.closed;
+                timerElement.className = "item-timer-box item-timer-ended";
+                if (submitBtn && !submitBtn.disabled) {
+                    submitBtn.disabled = true;
+                }
+            } else {
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                timerElement.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+                if (timeLeft <= 120000) { // 進入2分鐘壓哨
+                    timerElement.className = "item-timer-box item-timer-sniping";
+                    timerElement.innerText = `⏱️ ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                } else {
+                    timerElement.className = "item-timer-box";
+                }
+                if (submitBtn && submitBtn.disabled && !submitBtn.getAttribute('data-submitting')) {
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+    }
+
+    setInterval(triggerTick, 1000);
 
     function bindQuickTapEvents() {
         document.querySelectorAll('.btn-quick-tap').forEach(btn => {
@@ -466,10 +489,17 @@
         document.querySelectorAll('.quick-bid-form').forEach(form => {
             form.onsubmit = async (e) => {
                 e.preventDefault();
-                if (isAuctionEnded) return;
-
+                
                 const itemId = form.getAttribute('data-id');
                 const submitBtn = form.querySelector('.submit-btn');
+                
+                // 行為前置檢查：看該商品是否已截止
+                const correctedNow = new Date().getTime() + serverClockOffset;
+                const currentDeadlineTime = Date.parse(activeItemDeadlines[itemId]);
+                if (!isNaN(currentDeadlineTime) && (currentDeadlineTime - correctedNow <= 0)) {
+                    return; 
+                }
+
                 const statusMsg = form.querySelector(`.msg-id-${itemId}`);
                 const bidAmount = parseInt(form.querySelector(`.b-amt-${itemId}`).value);
                 const t = i18n[currentLang];
@@ -490,6 +520,7 @@
                 const { name, ig, mobile, email, paypal, address } = savedUser;
 
                 submitBtn.disabled = true;
+                submitBtn.setAttribute('data-submitting', 'true');
                 statusMsg.style.color = '#b06000';
                 statusMsg.innerText = t.sending;
 
@@ -514,25 +545,29 @@
                             timestamp: timestampISO
                         });
 
-                        transaction.update(docRef, {
+                        const updatePayload = {
                             currentHighestBid: bidAmount,
                             bids: currentBids
-                        });
+                        };
 
-                        if (globalDeadlineISO) {
-                            const currentDeadlineTime = new Date(globalDeadlineISO).getTime();
-                            const correctedNow = new Date().getTime() + serverClockOffset;
-                            
-                            if (currentDeadlineTime - correctedNow <= 120000 && currentDeadlineTime - correctedNow > 0) {
-                                const newDeadlineISO = new Date(currentDeadlineTime + 120000).toISOString();
-                                transaction.update(doc(db, "config", "global_settings"), { 
-                                    deadline: newDeadlineISO,
-                                    serverTimeSnapshot: timestampISO
-                                });
+                        // 獨立商品的壓哨延長機制 (只延長該商品)
+                        const itemDeadlineStr = sfDoc.get('deadline');
+                        if (itemDeadlineStr) {
+                            const itemDeadlineTime = Date.parse(itemDeadlineStr);
+                            if (!isNaN(itemDeadlineTime)) {
+                                const freshNow = new Date().getTime() + serverClockOffset;
+                                if (itemDeadlineTime - freshNow <= 120000 && itemDeadlineTime - freshNow > 0) {
+                                    // 自動將這件商品的截止時間延長 2 分鐘
+                                    const newDeadlineISO = new Date(itemDeadlineTime + 120000).toISOString();
+                                    updatePayload.deadline = newDeadlineISO;
+                                }
                             }
                         }
+
+                        transaction.update(docRef, updatePayload);
                     });
 
+                    // 同步寫入私密數據庫
                     await addDoc(collection(db, "private_bids"), {
                         itemId,
                         name, ig, mobile, email, paypal, address,
@@ -550,6 +585,7 @@
                     statusMsg.innerText = `${t.errFail}${error}`;
                 } finally {
                     submitBtn.disabled = false;
+                    submitBtn.removeAttribute('data-submitting');
                 }
             };
         });
